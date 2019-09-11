@@ -22,6 +22,9 @@ BIN_DIR = bin/
 os-image.bin: $(BIN_DIR)boot_sect.bin $(BIN_DIR)kernel.bin
 	cat $^ > os-image.bin
 
+kernel.elf: $(OBJS_DIR)kernel_entry.o ${OBJS}
+	ld -m elf_i386 -o $@ -Ttext 0x1000 $^ 
+
 $(BIN_DIR)boot_sect.bin: $(BOOT_DIR)*.asm
 	nasm -I $(BOOT_DIR) $(BOOT_DIR)boot_sect.asm -f bin -o $@
 

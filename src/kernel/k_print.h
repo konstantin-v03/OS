@@ -1,12 +1,6 @@
-#ifndef K_PRINT
-#define K_PRINT
-
 #define WHITE_ON_BLACK 0x0f
+#define RED_ON_WHITE 0xf4
 
-void k_clear_scr();
-
-void k_print_str(char* str, int col, int row, unsigned char attr);
-
-int k_print_char(char c, int col, int row, unsigned char attr);
-
-#endif
+void clear_screen();
+void kprint_at(char *message, int col, int row);
+void kprint(char *message);
