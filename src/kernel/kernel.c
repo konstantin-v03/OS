@@ -1,11 +1,8 @@
-#include "k_print.h"
+#include "../drivers/kprint.h"
 
 void main() {
 	clear_screen();
-	char* str = "Hello, World!\n";
-	for (int i = 0; i < 25; i++) {
-		kprint(str);
-	}
-
+	char* str = "Kernel is running!\n";
+	kprint(str);
 	return;	
 }

@@ -4,18 +4,25 @@ KERNEL_HDRS = $(wildcard $(KERNEL_DIR)*.h)
 DRIVERS_SRCS = $(wildcard $(DRIVERS_DIR)*.c)
 DRIVERS_HDRS = $(wildcard $(DRIVERS_DIR)*.h)
 
+LIBS_SRCS = $(wildcard $(LIBS_DIR)*.c)
+LIBS_HDRS = $(wildcard $(LIBS_DIR)*.h)
+
 KERNEL_SRCS_NOT_DIR = $(KERNEL_SRCS:$(KERNEL_DIR)%=%)
 KERNEL_C_OBJS = $(KERNEL_SRCS_NOT_DIR:%.c=%.o)
 
 DRIVERS_SRCS_NOT_DIR = $(DRIVERS_SRCS:$(DRIVERS_DIR)%=%)
 DRIVERS_C_OBJS = $(DRIVERS_SRCS_NOT_DIR:%.c=%.o)
 
-HDRS = $(KERNEL_HDRS) $(DRIVERS_HDRS)
-OBJS = $(DRIVERS_C_OBJS:%=$(OBJS_DIR)%) $(KERNEL_C_OBJS:%=$(OBJS_DIR)%)
+LIBS_SRCS_NOT_DIR = $(LIBS_SRCS:$(LIBS_DIR)%=%)
+LIBS_C_OBJS = $(LIBS_SRCS_NOT_DIR:%.c=%.o)
+
+HDRS = $(KERNEL_HDRS) $(DRIVERS_HDRS) $(LIBS_HDRS)
+OBJS = $(DRIVERS_C_OBJS:%=$(OBJS_DIR)%) $(KERNEL_C_OBJS:%=$(OBJS_DIR)%) $(LIBS_C_OBJS:%=$(OBJS_DIR)%)
 
 BOOT_DIR = src/boot/
 KERNEL_DIR = src/kernel/
 DRIVERS_DIR = src/drivers/
+LIBS_DIR = src/libs/
 OBJS_DIR = objs/
 BIN_DIR = bin/
 
@@ -35,6 +42,9 @@ $(OBJS_DIR)%.o: $(DRIVERS_DIR)%.c $(HDRS)
 	gcc -m32 -fno-pie -ffreestanding -c $< -o $@
 
 $(OBJS_DIR)%.o: $(KERNEL_DIR)%.c $(HDRS)
+	gcc -m32 -fno-pie -ffreestanding -c $< -o $@
+
+$(OBJS_DIR)%.o: $(LIBS_DIR)%.c $(HDRS)
 	gcc -m32 -fno-pie -ffreestanding -c $< -o $@
 
 $(OBJS_DIR)%.o: $(KERNEL_DIR)%.asm
