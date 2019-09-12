@@ -1,6 +1,6 @@
 gdt_start:
-    dd 0x0 ; 4 byte
-    dd 0x0 ; 4 byte
+    dd 0x0
+    dd 0x0
 
 gdt_code: 
     dw 0xffff    

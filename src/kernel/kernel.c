@@ -1,8 +1,11 @@
-#include "../drivers/kprint.h"
+#include "../interrupts/isr.h"
+#include "../drivers/keyboard.h"
+#include "../drivers/ports.h"
+#include "../libs/timer.h"
 
 void main() {
 	clear_screen();
-	char* str = "Kernel is running!\n";
-	kprint(str);
-	return;	
+    isr_install();
+	asm volatile("sti");
+    init_keyboard();
 }
