@@ -30,15 +30,11 @@ load_kernel:
 
 [bits 32]
 BEGIN_PM:
-    mov ebx, MSG_PROT_MODE
-    call print_string_pm
     call KERNEL_OFFSET
-    call print_string_pm
     jmp $
 
 BOOT_DRIVE db 0
 MSG_REAL_MODE db "Started in 16-bit Real Mode", 0
-MSG_PROT_MODE db "Landed in 32-bit Protected Mode", 0
 MSG_LOAD_KERNEL db "Loading kernel into memory", 0
 MSG_KERNEL_RUNNING db "Kernel is running", 0
 

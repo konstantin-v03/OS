@@ -1,59 +1,37 @@
-KERNEL_SRCS = $(wildcard $(KERNEL_DIR)*.c)
-KERNEL_HDRS = $(wildcard $(KERNEL_DIR)*.h)
+C_SRCS = $(wildcard $(KERNEL_DIR)*.c) $(wildcard $(DRIVERS_DIR)*.c) $(wildcard $(LIBS_DIR)*.c) $(wildcard $(INT_DIR)*.c)
 
-DRIVERS_SRCS = $(wildcard $(DRIVERS_DIR)*.c)
-DRIVERS_HDRS = $(wildcard $(DRIVERS_DIR)*.h)
+HDRS = $(wildcard $(KERNEL_DIR)*.h) $(wildcard $(DRIVERS_DIR)*.h) $(wildcard $(LIBS_DIR)*.h) $(wildcard $(INT_DIR)*.h)
 
-LIBS_SRCS = $(wildcard $(LIBS_DIR)*.c)
-LIBS_HDRS = $(wildcard $(LIBS_DIR)*.h)
-
-INT_SRCS = $(wildcard $(INT_DIR)*.c)
-INT_HDRS = $(wildcard $(INT_DIR)*.c)
-
-TEMP = $(KERNEL_SRCS:$(KERNEL_DIR)%=%) $(DRIVERS_SRCS:$(DRIVERS_DIR)%=%) $(LIBS_SRCS:$(LIBS_DIR)%=%) $(INT_SRCS:$(INT_DIR)%=%)
-
-C_OBJS = $(TEMP:%.c=%.o)
-
-HDRS = $(KERNEL_HDRS) $(DRIVERS_HDRS) $(LIBS_HDRS) $(INT_HDRS)
-OBJS = $(C_OBJS:%=$(OBJS_DIR)%) $(OBJS_DIR)interrupts.o
+OBJS = $(C_SRCS:%.c=%.o) $(INT_DIR)/interrupts.o $(BOOT_DIR)/kernel_entry.o
 
 BOOT_DIR = src/boot/
 KERNEL_DIR = src/kernel/
 DRIVERS_DIR = src/drivers/
 INT_DIR = src/interrupts/
 LIBS_DIR = src/libs/
-OBJS_DIR = objs/
 BIN_DIR = bin/
+
+CC = gcc
+CFLAGS = -Wall
 
 os-image.bin: $(BIN_DIR)boot_sect.bin $(BIN_DIR)kernel.bin
 	cat $^ > os-image.bin
 
-kernel.elf: $(OBJS_DIR)kernel_entry.o ${OBJS}
+kernel.elf: $(KERNEL_DIR)kernel_entry.o $(OBJS)
 	ld -m elf_i386 -o $@ -Ttext 0x1000 $^ 
 
 $(BIN_DIR)boot_sect.bin: $(BOOT_DIR)*.asm
 	nasm -I $(BOOT_DIR) $(BOOT_DIR)boot_sect.asm -f bin -o $@
 
-$(BIN_DIR)kernel.bin: $(OBJS_DIR)kernel_entry.o $(OBJS)
+$(BIN_DIR)kernel.bin: $(OBJS)
 	ld -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary
 
-$(OBJS_DIR)%.o: $(DRIVERS_DIR)%.c $(HDRS)
-	gcc -m32 -fno-pie -ffreestanding -c $< -o $@
+%.o: %.c $(HDRS)
+	$(CC) $(CFLAGS) -m32 -fno-pie -ffreestanding -c $< -o $@
 
-$(OBJS_DIR)%.o: $(KERNEL_DIR)%.c $(HDRS)
-	gcc -m32 -fno-pie -ffreestanding -c $< -o $@
-
-$(OBJS_DIR)%.o: $(LIBS_DIR)%.c $(HDRS)
-	gcc -m32 -fno-pie -ffreestanding -c $< -o $@
-
-$(OBJS_DIR)%.o: $(INT_DIR)%.c $(HDRS)
-	gcc -m32 -fno-pie -ffreestanding -c $< -o $@
-
-$(OBJS_DIR)%.o: $(KERNEL_DIR)%.asm
-	nasm $< -f elf -o $@
-
-$(OBJS_DIR)%.o: $(INT_DIR)%.asm
+%.o: %.asm
 	nasm $< -f elf -o $@
 
 clean:
-	rm -rf $(OBJS_DIR)*.o $(BIN_DIR)*.bin
+	rm -rf $(BIN_DIR)*.bin os-image.bin
+	rm -rf $(KERNEL_DIR)*.o $(DRIVERS_DIR)*.o $(INT_DIR)*.o $(LIBS_DIR)*.o

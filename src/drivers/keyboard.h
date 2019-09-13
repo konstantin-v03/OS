@@ -1,6 +1,8 @@
-#ifndef KEY_BOARD
-#define KEY_BOARD
+#ifndef KEY_BOARD_H
+#define KEY_BOARD_H
 
-void init_keyboard();
+typedef void (*send_char)(uint8_t scan_code);
+
+void init_keyboard(send_char cb);
 
 #endif

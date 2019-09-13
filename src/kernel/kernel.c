@@ -1,11 +1,20 @@
+#include "../drivers/screen.h"
 #include "../interrupts/isr.h"
-#include "../drivers/keyboard.h"
-#include "../drivers/ports.h"
-#include "../libs/timer.h"
+#include "../libs/shell.h"
 
-void main() {
-	clear_screen();
+void krequest_manager(char* request);
+
+void kernel_main() {
     isr_install();
 	asm volatile("sti");
-    init_keyboard();
+	run_shell(&krequest_manager);
+	return;
 }
+
+void krequest_manager(char* request) {
+	kprint("YOUR COMMAND: \0");
+	kprint(request);
+	kprint("\n\0");
+	return;
+}
+

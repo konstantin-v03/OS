@@ -1,6 +1,8 @@
-#include "kprint.h"
+#include <stdint.h>
+#include "../libs/string.h"
+#include "../libs/mem.h"
+#include "screen.h"
 #include "ports.h"
-#include "../libs/utils.h"
 
 #define VIDEO_ADDRESS 0xb8000
 
@@ -10,16 +12,15 @@
 #define REG_SCREEN_CTRL 0x3d4
 #define REG_SCREEN_DATA 0x3d5
 
-
 int get_offset(int col, int row) { return 2 * (row * MAX_COLS + col); }
 int get_offset_row(int offset) { return offset / (2 * MAX_COLS); }
-int get_offset_col(int offset) { return (offset - (get_offset_row(offset)*2*MAX_COLS))/2; }
+int get_offset_col(int offset) { return (offset - (get_offset_row(offset) * 2 * MAX_COLS)) / 2; }
 
 int get_cursor_offset();
 void set_cursor_offset(int offset);
-int print_char(char c, int col, int row, char attr);
+int print_char(char c, int col, int row, uint8_t attr);
 
-void kprint_at(char *message, int col, int row) {
+void kprint_at(char* message, int col, int row) {
     int offset;
 
     if (col >= 0 && row >= 0) {
@@ -46,8 +47,8 @@ void kprint(char *message) {
     return;
 }
 
-int print_char(char c, int col, int row, char attr) {
-    unsigned char* video_memory = VIDEO_ADDRESS;
+int print_char(char c, int col, int row, uint8_t attr) {
+    uint8_t* video_memory = (uint8_t*)VIDEO_ADDRESS;
 
     if (!attr) {
         attr = WHITE_ON_BLACK;
@@ -79,10 +80,10 @@ int print_char(char c, int col, int row, char attr) {
     if (offset >= MAX_ROWS * MAX_COLS * 2) {
         int i;
         for (i = 1; i < MAX_ROWS; i++) {
-            memory_copy(get_offset(0, i) + VIDEO_ADDRESS, get_offset(0, i-1) + VIDEO_ADDRESS, MAX_COLS * 2);
+            memory_copy((uint8_t*)(get_offset(0, i) + VIDEO_ADDRESS),(uint8_t*)(get_offset(0, i - 1) + VIDEO_ADDRESS), MAX_COLS * 2);
 		}
 
-        char* last_line = get_offset(0, MAX_ROWS-1) + VIDEO_ADDRESS;
+        char* last_line = (char*)(get_offset(0, MAX_ROWS - 1) + VIDEO_ADDRESS);
         for (i = 0; i < MAX_COLS * 2; i++) {
 			last_line[i] = 0;
 		}
@@ -93,6 +94,15 @@ int print_char(char c, int col, int row, char attr) {
     set_cursor_offset(offset);
 
     return offset;
+}
+
+void kprint_backspace() {
+    int offset = get_cursor_offset() - 2;
+    int row = get_offset_row(offset);
+    int col = get_offset_col(offset);
+    int offset_ = print_char(0x20, col, row, WHITE_ON_BLACK);
+	set_cursor_offset(offset_ - 2);
+	return;
 }
 
 int get_cursor_offset() {
@@ -106,14 +116,14 @@ int get_cursor_offset() {
 void set_cursor_offset(int offset) {
     offset /= 2;
     port_byte_out(REG_SCREEN_CTRL, 14);
-    port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset >> 8));
+    port_byte_out(REG_SCREEN_DATA, (uint8_t)(offset >> 8));
     port_byte_out(REG_SCREEN_CTRL, 15);
-    port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset & 0xff));
+    port_byte_out(REG_SCREEN_DATA, (uint8_t)(offset & 0xff));
     return;
 }
 
 void clear_screen() {
-    unsigned char *video_memory = VIDEO_ADDRESS;
+    uint8_t* video_memory = (uint8_t*)VIDEO_ADDRESS;
 
     for (int i = 0; i < MAX_COLS * MAX_ROWS; i++) {
         video_memory[i * 2] = 0;
