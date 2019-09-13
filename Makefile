@@ -2,7 +2,7 @@ C_SRCS = $(wildcard $(KERNEL_DIR)*.c) $(wildcard $(DRIVERS_DIR)*.c) $(wildcard $
 
 HDRS = $(wildcard $(KERNEL_DIR)*.h) $(wildcard $(DRIVERS_DIR)*.h) $(wildcard $(LIBS_DIR)*.h) $(wildcard $(INT_DIR)*.h)
 
-OBJS = $(C_SRCS:%.c=%.o) $(INT_DIR)/interrupts.o $(BOOT_DIR)/kernel_entry.o
+OBJS = $(C_SRCS:%.c=%.o) $(INT_DIR)interrupts.o $(BOOT_DIR)kernel_entry.o
 
 BOOT_DIR = src/boot/
 KERNEL_DIR = src/kernel/
@@ -34,4 +34,4 @@ $(BIN_DIR)kernel.bin: $(OBJS)
 
 clean:
 	rm -rf $(BIN_DIR)*.bin os-image.bin
-	rm -rf $(KERNEL_DIR)*.o $(DRIVERS_DIR)*.o $(INT_DIR)*.o $(LIBS_DIR)*.o
+	rm -rf $(KERNEL_DIR)*.o $(DRIVERS_DIR)*.o $(INT_DIR)*.o $(LIBS_DIR)*.o $(BOOT_DIR)*.o

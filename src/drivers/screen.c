@@ -20,8 +20,12 @@ int get_cursor_offset();
 void set_cursor_offset(int offset);
 int print_char(char c, int col, int row, uint8_t attr);
 
-void kprint_at(char* message, int col, int row) {
+void kprint_at(char* message, int col, int row, uint8_t attr) {
     int offset;
+
+	if (!attr) {
+		attr = WHITE_ON_BLACK;
+	}
 
     if (col >= 0 && row >= 0) {
         offset = get_offset(col, row);
@@ -34,7 +38,7 @@ void kprint_at(char* message, int col, int row) {
     int i = 0;
 
     while (message[i] != 0) {
-        offset = print_char(message[i++], col, row, WHITE_ON_BLACK);
+        offset = print_char(message[i++], col, row, attr);
         col = get_offset_col(offset);
         row = get_offset_row(offset);
     }
@@ -42,9 +46,14 @@ void kprint_at(char* message, int col, int row) {
     return;
 }
 
-void kprint(char *message) {
-    kprint_at(message, -1, -1);
+void kprint(char* message) {
+    kprint_at(message, -1, -1, WHITE_ON_BLACK);
     return;
+}
+
+void kprint_a(char* message, uint8_t attr) {
+    kprint_at(message, -1, -1, attr);
+	return;
 }
 
 int print_char(char c, int col, int row, uint8_t attr) {

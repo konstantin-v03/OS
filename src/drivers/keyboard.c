@@ -1,6 +1,5 @@
 #include "../interrupts/isr.h"
 #include "../drivers/ports.h"
-#include "../kernel/kernel.h"
 #include "../libs/string.h"
 #include "keyboard.h"
 #include "screen.h"
