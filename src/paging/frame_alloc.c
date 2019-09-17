@@ -61,7 +61,8 @@ void alloc_frame(page_t* page, int is_kernel, int is_writeable) {
         uint32_t idx = first_frame(); 
         if (idx == (uint32_t) - 1)
         { 
-            shell_print("NO FREE FRAMES!");
+            shell_print_a("\nNO FREE FRAMES!\nStoping the CPU!\n\0", RED_ON_WHITE);
+			asm volatile("hlt");
 			return;
         }
         set_frame(idx * 0x1000);

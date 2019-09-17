@@ -40,5 +40,5 @@ debug: os-image.bin kernel.elf
 
 clean:
 	rm -rf $(BIN_DIR)*.bin os-image.bin
-	rm -rf $(KERNEL_DIR)*.o $(DRIVERS_DIR)*.o $(INT_DIR)*.o $(LIBS_DIR)*.o $(BOOT_DIR)*.o
+	rm -rf $(KERNEL_DIR)*.o $(DRIVERS_DIR)*.o $(INT_DIR)*.o $(LIBS_DIR)*.o $(BOOT_DIR)*.o $(PAGING_DIR)*.o
 	rm -rf kernel.elf

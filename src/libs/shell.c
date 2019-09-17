@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include "../drivers/keyboard.h"
-#include "../drivers/screen.h"
 #include "../libs/string.h"
 #include "shell.h"
 
@@ -60,9 +59,14 @@ void shell_callback(uint8_t scancode) {
 }
 
 void shell_print(char* message) {
-	kprint("\nShell: \0");
-	kprint(message);
+	kprint_a("\n\0", YELLOW_ON_BLACK);
+	kprint_a(message, YELLOW_ON_BLACK);
 	kprint("\n\0");
+	return;
+}
+
+void shell_print_a(char* message, uint8_t attr) {
+	kprint_a(message, RED_ON_WHITE);
 	return;
 }
 

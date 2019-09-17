@@ -6,10 +6,7 @@
 
 #define PLACEMENT_ADDRESS 0x300000
 
-void page_fault(registers_t regs) {
-	shell_print("PAGE FAULT!");
-	return;
-}
+void page_fault(registers_t regs);
 
 void initialise_paging(uint32_t mem_end_page) {
 	set_placement_addr(PLACEMENT_ADDRESS);
@@ -26,7 +23,7 @@ void initialise_paging(uint32_t mem_end_page) {
 		alloc_frame(get_page(i, 1, kernel_dir), 0, 0);
 	}
 
-    register_interrupt_handler(14, page_fault);
+    register_interrupt_handler(14, &page_fault);
 
 	switch_page_directory(kernel_dir);
 
@@ -59,4 +56,10 @@ page_t* get_page(uint32_t address, int make, page_directory_t* dir) {
         return 0;
     }
 	return 0;
+}
+
+void page_fault(registers_t regs) {
+	shell_print_a("\nPAGE FAULT!\n\0", RED_ON_WHITE);
+	asm volatile("hlt");
+	return;
 }
