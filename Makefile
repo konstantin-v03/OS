@@ -1,16 +1,18 @@
-C_SRCS = $(wildcard $(KERNEL_DIR)*.c) $(wildcard $(DRIVERS_DIR)*.c) $(wildcard $(LIBS_DIR)*.c) $(wildcard $(INT_DIR)*.c)
+C_SRCS = $(wildcard $(KERNEL_DIR)*.c) $(wildcard $(DRIVERS_DIR)*.c) $(wildcard $(LIBS_DIR)*.c) $(wildcard $(INT_DIR)*.c) $(wildcard $(PAGING_DIR)*.c)
 
-HDRS = $(wildcard $(KERNEL_DIR)*.h) $(wildcard $(DRIVERS_DIR)*.h) $(wildcard $(LIBS_DIR)*.h) $(wildcard $(INT_DIR)*.h)
+HDRS = $(wildcard $(KERNEL_DIR)*.h) $(wildcard $(DRIVERS_DIR)*.h) $(wildcard $(LIBS_DIR)*.h) $(wildcard $(INT_DIR)*.h) $(wildcard $(PAGING_DIR)*.h)
 
 OBJS = $(C_SRCS:%.c=%.o) $(INT_DIR)interrupts.o $(KERNEL_DIR)kernel_entry.o
 
 BOOT_DIR = src/boot/
 KERNEL_DIR = src/kernel/
 DRIVERS_DIR = src/drivers/
+PAGING_DIR = src/paging/
 INT_DIR = src/interrupts/
 LIBS_DIR = src/libs/
 BIN_DIR = bin/
 
+GDB = gdb
 CC = gcc
 CFLAGS = -g -ffreestanding -Wall -Wextra -fno-exceptions -m32 -fno-pie
 
@@ -32,6 +34,11 @@ $(BIN_DIR)kernel.bin: $(OBJS)
 %.o: %.asm
 	nasm $< -f elf -o $@
 
+debug: os-image.bin kernel.elf
+	qemu-system-i386 -s -fda os-image.bin &
+	${GDB} -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
+
 clean:
 	rm -rf $(BIN_DIR)*.bin os-image.bin
 	rm -rf $(KERNEL_DIR)*.o $(DRIVERS_DIR)*.o $(INT_DIR)*.o $(LIBS_DIR)*.o $(BOOT_DIR)*.o
+	rm -rf kernel.elf
