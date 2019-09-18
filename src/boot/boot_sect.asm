@@ -37,7 +37,7 @@ load_kernel:
     ;call print
     ;call print_nl
     mov bx, KERNEL_OFFSET
-    mov dh, 30
+    mov dh, 50
     call disk_load
     ret
 
