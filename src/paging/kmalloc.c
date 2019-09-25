@@ -13,7 +13,7 @@ uint32_t kmalloc_a(uint32_t size) {
     return tmp;
 }
 
-uint32_t kmalloc_p(uint32_t size, uint32_t * phys) {
+uint32_t kmalloc_p(uint32_t size, uint32_t* phys) {
     if (phys) {
         * phys = placement_address;
     }
@@ -23,7 +23,7 @@ uint32_t kmalloc_p(uint32_t size, uint32_t * phys) {
     return tmp;
 }
 
-uint32_t kmalloc_ap(uint32_t size, uint32_t * phys) {
+uint32_t kmalloc_ap(uint32_t size, uint32_t* phys) {
     if ((placement_address & 0xFFFFF000)) {
         placement_address &= 0xFFFFF000;
         placement_address += 0x1000;

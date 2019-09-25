@@ -5,10 +5,10 @@
 
 void krequest_manager(char* request);
 
-void kernel_main() {
+void kernel_main(int32_t mem_size) {
     isr_install();
     asm volatile("sti");  
-    initialise_paging(0x1000000);
+    initialise_paging(mem_size);
     run_shell(&krequest_manager);
 
     //uint32_t *ptr = (uint32_t*)0x400000;

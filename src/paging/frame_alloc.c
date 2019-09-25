@@ -46,7 +46,7 @@ uint32_t first_frame() {
             }
         }
     }
-    return 0;
+    return (uint32_t) - 1;
 }
 
 void alloc_frame(page_t* page, int is_kernel, int is_writeable) {
