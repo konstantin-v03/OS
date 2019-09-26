@@ -1,10 +1,12 @@
 #include "../interrupts/isr.h"
 #include "../drivers/ports.h"
+#include "../libs/common.h"
 #include "timer.h"
 
 uint32_t tick = 0;
 
-static void timer_callback(registers_t regs) {
+void timer_callback(registers_t regs) {
+    UNUSED(regs);
     tick++;
 	return;
 }

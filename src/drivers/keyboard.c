@@ -1,12 +1,14 @@
 #include "../interrupts/isr.h"
 #include "../drivers/ports.h"
 #include "../libs/string.h"
+#include "../libs/common.h"
 #include "keyboard.h"
 #include "screen.h"
 
 send_char call_back;
 
 static void keyboard_callback(registers_t regs) {
+    UNUSED(regs);
     uint8_t scancode = port_byte_in(0x60);
     
     if (scancode == 0) {

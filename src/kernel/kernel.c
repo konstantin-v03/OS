@@ -2,6 +2,7 @@
 #include "../interrupts/isr.h"
 #include "../libs/shell.h"
 #include "../paging/paging.h"
+#include "../libs/kalloc.h"
 
 void krequest_manager(char* request);
 
@@ -10,17 +11,18 @@ void kernel_main(int32_t mem_size) {
     asm volatile("sti");  
     initialise_paging(mem_size);
     run_shell(&krequest_manager);
-
-    //uint32_t *ptr = (uint32_t*)0x400000;
-    //uint32_t do_page_fault = *ptr;
-	
 	return;
 }
 
 void krequest_manager(char* request) {
-	kprint("YOUR COMMAND: \0");
-	kprint(request);
-	kprint("\n\0");
+    if (strcmp(request, "memmap\0") == 0) {
+        kprint("0x0 -> 0x100000 (Kernel place)\n\0");
+        kprint("0x100000 -> 0x600000 (Place for page tables)\n\0");
+        kprint("0x600000 -> 0x1600000 (Place for heap(The heap max size is equal to 16.7Mb))\n\0");
+        kprint("A kernel stack located at the end of memory and expand down (The kernel stack max size equal to 1Mb)\n\0");
+    } else {
+        kprint("Unknown command: \n\0");
+    }
 	return;
 }
 

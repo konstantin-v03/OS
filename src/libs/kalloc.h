@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 
-void init_kheap(void* heap_start_, uint32_t initial_size_);
+#include "../paging/paging.h"
+
+void init_kheap(uint32_t heap_start_, page_directory_t* dir);
 
 void* kalloc(uint32_t size);
 

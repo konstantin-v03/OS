@@ -66,7 +66,7 @@ void shell_print(char* message) {
 }
 
 void shell_print_a(char* message, uint8_t attr) {
-	kprint_a(message, RED_ON_WHITE);
+	kprint_a(message, attr);
 	return;
 }
 
