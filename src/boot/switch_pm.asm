@@ -18,17 +18,7 @@ init_pm:
     mov fs, ax
     mov gs, ax
 
-    mov ebp, 0x90000
+    mov ebp, 0x7a12000
     mov esp, ebp
 
-    mov edx, 0xFFFFFFFF
-    sub edx, BIOS_RESERVED
-    mov esi, BIOS_RESERVED
-    call probeRAM
-    add ecx, BIOS_RESERVED
-    and ecx, ~0x00000FFF 
-    sub ecx, 0x1000
-
-    mov ebp, ecx
-    mov esp, ebp
     call BEGIN_PM

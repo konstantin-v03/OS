@@ -190,7 +190,7 @@ void kfree(void* ptr) {
 
 int valid_block(void* ptr){
     if (base != NULL) {
-        if (ptr > base && ptr < sbrk(0)) {
+        if (ptr > (void*)base && ptr < sbrk(0)) {
             s_block* b = get_block(ptr);
             return (ptr == b->ptr);
         }

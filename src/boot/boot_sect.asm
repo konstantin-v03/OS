@@ -1,6 +1,7 @@
 [org 0x7c00]
 KERNEL_OFFSET equ 0x1000
 BIOS_RESERVED equ 0x100000
+MEM_SIZE      equ 0x7a12000
 	mov ax, 0
 	mov ds, ax
 	mov ss, ax
@@ -21,7 +22,6 @@ BIOS_RESERVED equ 0x100000
 %include "gdt.asm"
 %include "print_pm.asm"
 %include "switch_pm.asm"
-%include "manual_probing.asm"
 
 [bits 16]
 load_kernel:
@@ -32,7 +32,7 @@ load_kernel:
 
 [bits 32]
 BEGIN_PM:
-    push ecx
+    push MEM_SIZE
 	call KERNEL_OFFSET
     jmp $
 
